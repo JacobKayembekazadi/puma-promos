@@ -70,7 +70,7 @@ export const generateQuote = async (data: QuoteFormData): Promise<QuoteResult> =
   const ai = getAi();
   try {
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.0-flash",
       contents: generateQuotePrompt(data),
       config: {
         responseMimeType: "application/json",
@@ -116,7 +116,7 @@ let chat: Chat | null = null;
 const initializeChat = (): Chat => {
     const ai = getAi();
     return ai.chats.create({
-        model: 'gemini-3-flash-preview',
+        model: 'gemini-2.0-flash',
         config: {
             systemInstruction: `You are an AI assistant for PumaPromos, a Houston-based promotional products company. You must adhere to a professional, monochrome aesthetic in your persona.
 

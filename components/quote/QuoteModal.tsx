@@ -48,17 +48,29 @@ const QuoteModal: React.FC<QuoteModalProps> = ({ isOpen, onClose, onOpenChat }) 
     try {
       const result = await generateQuote(formData);
       setQuoteResult(result);
-    } catch (e) {
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error occurred";
       setError("We couldn't generate your quote. Please try again or contact our team.");
-      console.error(e);
+      console.error("Quote generation failed:", message);
     } finally { setIsGenerating(false); }
   };
 
-  const handleEmailQuote = () => {
-    // This is a placeholder for a real API call.
-    console.log("Simulating sending email to:", formData.email);
-    setEmailStatus('success');
-    setTimeout(() => setEmailStatus('idle'), 3000); // Reset after 3 seconds
+  const handleEmailQuote = async () => {
+    if (!formData.email) {
+      setEmailStatus('error');
+      setTimeout(() => setEmailStatus('idle'), 3000);
+      return;
+    }
+
+    // In production, this would be an API call to a backend service
+    // For now, we simulate the email sending behavior
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setEmailStatus('success');
+    } catch {
+      setEmailStatus('error');
+    }
+    setTimeout(() => setEmailStatus('idle'), 3000);
   };
   
   if (!isOpen) return null;
@@ -89,6 +101,9 @@ const QuoteModal: React.FC<QuoteModalProps> = ({ isOpen, onClose, onOpenChat }) 
         )}
         {emailStatus === 'success' && (
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-green-500 text-white px-4 py-2 rounded-lg text-sm">Quote emailed to {formData.email}</div>
+        )}
+        {emailStatus === 'error' && (
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-lg text-sm">Failed to send email. Please try again.</div>
         )}
       </div>
     );
