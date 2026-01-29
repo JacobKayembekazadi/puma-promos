@@ -4,10 +4,29 @@ import { REAL_PRODUCTS } from '../constants';
 
 // Environment variables
 const AI_PROVIDER = process.env.AI_PROVIDER || 'gemini';
-const API_KEY = process.env.API_KEY;
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+
+// Get the appropriate API key based on provider
+const getApiKey = (): string | undefined => {
+  switch (AI_PROVIDER.toLowerCase()) {
+    case 'openai':
+      return OPENAI_API_KEY;
+    case 'anthropic':
+    case 'claude':
+      return ANTHROPIC_API_KEY;
+    case 'gemini':
+    case 'google':
+    default:
+      return GEMINI_API_KEY;
+  }
+};
+
+const API_KEY = getApiKey();
 
 if (!API_KEY) {
-  console.warn("API_KEY environment variable not set. Using mock data.");
+  console.warn(`${AI_PROVIDER.toUpperCase()}_API_KEY environment variable not set. Using mock data.`);
 }
 
 // Prompt templates (shared across providers)
